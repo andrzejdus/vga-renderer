@@ -2,58 +2,7 @@
 #include <inttypes.h>
 #include "Mode13h.h"
 #include "Bitmap.h"
-
-class BitmapInfoPrinter {
-public:
-    BitmapInfoPrinter(Bitmap *bitmap) {
-        this->bitmap = bitmap;
-    }
-
-    void printType() {
-        uint16_t type = this->bitmap->getFileHeader().type;
-
-        printf("Type: %c%c\n", type, *(((char *) &type) + 1));
-    }
-
-    void printSize() {
-        printf("Size: %u\n", this->bitmap->getFileHeader().size);
-    }
-
-    void printOffset() {
-        printf("Offset: %u\n", this->bitmap->getFileHeader().offset);
-    }
-
-    void printInfoHeaderSize() {
-        printf("Info header size: %u\n", this->bitmap->getInfoHeader().thisHeaderSize);
-    }
-
-    void printWidth() {
-        printf("Width: %u\n", this->bitmap->getInfoHeader().width);
-    }
-
-    void printHeight() {
-        printf("Height: %u\n", this->bitmap->getInfoHeader().height);
-    }
-
-    void printColorPlanesCount() {
-        printf("Color planes count: %u\n", this->bitmap->getInfoHeader().colorPlanesCount);
-    }
-
-    void printBitsPerPixel() {
-        printf("Bits per pixel: %u\n", this->bitmap->getInfoHeader().bitsPersPixel);
-    }
-
-    void printCompressionMethod() {
-        printf("Compression method: %u\n", this->bitmap->getInfoHeader().compressionMethod);
-    }
-
-    void printColorsCount() {
-        printf("Colors count: %u\n", this->bitmap->getInfoHeader().colorsCount);
-    }
-
-private:
-    Bitmap *bitmap;
-};
+#include "BitmapInfoPrinter.h"
 
 int main() {
     Bitmap bitmap;

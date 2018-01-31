@@ -189,8 +189,8 @@ int main() {
 
         mode13h.setPalette((uint32_t *) bitmap.getPalette());
 
-        for (int x = 0; x < mode13h.getScreenDimensions().width; x++) {
-            for (int y = 0; y < mode13h.getScreenDimensions().height; y++) {
+        for (int x = 0; x < VGA_SCREEN_WIDTH; x++) {
+            for (int y = 0; y < VGA_SCREEN_HEIGHT; y++) {
                 mode13h.drawPixel(x, y, bitmap.getPixelColor(x, y));
             }
         }
@@ -208,7 +208,6 @@ int main() {
         mode13h.exit();
     } else {
         printf("VGA initialization error!\n");
-//		printf("Not enough heap memory, free %lu bytes", coreleft());
         getchar();
     }
 

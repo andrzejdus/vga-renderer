@@ -41,10 +41,14 @@ void Mode13h::update() {
 void Mode13h::drawPixel(int x, int y, uint8_t color) {
     *(this->offScreenBuffer + y * VGA_SCREEN_WIDTH + x) = color;
 }
-//
-//void Mode13h::drawSprite() {
-//
-//}
+
+void Mode13h::drawSprite(int positionX, int positionY, Bitmap *bitmap) {
+    for (int y = 0; y < bitmap->getHeight() && y < VGA_SCREEN_HEIGHT; y++) {
+        memcpy(this->offScreenBuffer + (positionY + y) * VGA_SCREEN_WIDTH + positionX,
+               bitmap->getPixelsRow(y),
+               bitmap->getWidth());
+    }
+}
 
 void Mode13h::setPalette(uint32_t *palette) {
     outp(VGA_PALETTE_INDEX, 0);

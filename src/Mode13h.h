@@ -2,6 +2,7 @@
 #define MODE13H_H
 
 #include <inttypes.h>
+#include "Bitmap.h"
 
 #define BIOS_VIDEO_INT 0x10
 #define BIOS_GET_VIDEO_MODE 0xf
@@ -22,12 +23,13 @@ public:
     void exit();
     void update();
     void drawPixel(int x, int y, uint8_t color);
+    void drawSprite(int positionX, int positionY, Bitmap *bitmap);
     void setPalette(uint32_t *palette);
 
 private:
     int previousVideoMode;
-    unsigned char *vgaScreenBuffer;
-    unsigned char *offScreenBuffer;
+    unsigned char *vgaScreenBuffer; // TODO use "inttypes.h"
+    unsigned char *offScreenBuffer; // TODO use "inttypes.h"
 
     void enter();
     void leave();

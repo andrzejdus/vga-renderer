@@ -38,10 +38,26 @@ int main() {
             mode13h.drawPixel(x, y, bitmap.getPixelColor(x, y));
         }
     }
-
     mode13h.update();
 
-    printf("OK!\n");
+    printf("Press enter!\n");
+    getchar();
+
+    for (int x = 0; x < VGA_SCREEN_WIDTH; x++) {
+        for (int y = 0; y < VGA_SCREEN_HEIGHT; y++) {
+            mode13h.drawPixel(x, y, 0);
+        }
+    }
+    mode13h.update();
+
+    printf("Press enter!\n");
+    getchar();
+
+
+    mode13h.drawSprite(100, 100, &bitmap);
+    mode13h.update();
+
+    printf("Press enter!\n");
     getchar();
 
     mode13h.exit();

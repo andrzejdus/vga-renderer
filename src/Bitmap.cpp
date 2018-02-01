@@ -28,13 +28,13 @@ int Bitmap::load(char *fileName) {
     printf("Calculated width: %u\n", calculatedWidth);
     printf("Pixels data size: %u\n", pixelsDataSize);
 
-    this->pixelsData = new uint8_t[pixelsDataSize];
+    this->pixelsData = new BitmapPixel[pixelsDataSize];
 
-    uint8_t *head = this->pixelsData;
+    BitmapPixel *head = this->pixelsData;
     printf("%u %u\n", sizeof(uint8_t), sizeof(head));
     size_t n = pixelsDataSize;
     while (n > 0) {
-        size_t readCount = fread(head, sizeof(uint8_t), n, filePointer);
+        size_t readCount = fread(head, sizeof(BitmapPixel), n, filePointer);
         n -= readCount;
         head += readCount;
 
@@ -68,10 +68,22 @@ BitmapInfoHeader Bitmap::getInfoHeader() {
     return bitmapInfoHeader;
 }
 
-uint8_t Bitmap::getPixelColor(int x, int y) {
-    return *(this->pixelsData + 64000 - y * bitmapInfoHeader.width -320 + x);
+BitmapPixel Bitmap::getPixelColor(int x, int y) {
+    return *(this->pixelsData + 64000 - y * bitmapInfoHeader.width - 320 + x);
+}
+
+BitmapPixel *Bitmap::getPixelsRow(int y) {
+    return this->pixelsData + 64000 - y * bitmapInfoHeader.width - 320;
 }
 
 BitmapPaletteColor *Bitmap::getPalette() {
     return this->paletteData;
+}
+
+BitmapWidth Bitmap::getWidth() {
+    return this->bitmapInfoHeader.width;
+}
+
+BitmapHeight Bitmap::getHeight() {
+    return this->bitmapInfoHeader.height;
 }

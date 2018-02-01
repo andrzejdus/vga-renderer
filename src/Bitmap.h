@@ -3,6 +3,10 @@
 
 #include <inttypes.h>
 
+typedef uint8_t BitmapPixel;
+typedef uint32_t BitmapWidth;
+typedef uint32_t BitmapHeight;
+
 struct BitmapFileHeader {
     uint16_t type;
     uint32_t size;
@@ -13,8 +17,8 @@ struct BitmapFileHeader {
 
 struct BitmapInfoHeader {
     uint32_t thisHeaderSize;
-    int32_t width;
-    int32_t height;
+    BitmapWidth width;
+    BitmapHeight height;
     uint16_t colorPlanesCount;
     uint16_t bitsPersPixel;
     uint32_t compressionMethod;
@@ -34,17 +38,19 @@ struct BitmapPaletteColor {
 
 class Bitmap {
 public:
-    int load(char *fileName);
+    int load(char *fileName); // TODO move to separate class
     BitmapFileHeader getFileHeader();
     BitmapInfoHeader getInfoHeader();
-    uint8_t getPixelColor(int x, int y);
+    BitmapPixel getPixelColor(int x, int y); // TODO should return address (faster?)?
+    BitmapPixel *getPixelsRow(int y);
     BitmapPaletteColor *getPalette();
-
+    BitmapWidth getWidth();
+    BitmapHeight getHeight();
 private:
     BitmapFileHeader bitmapFileHeader;
     BitmapInfoHeader bitmapInfoHeader;
     BitmapPaletteColor *paletteData;
-    uint8_t *pixelsData;
+    BitmapPixel *pixelsData;
 };
 
 #endif //MODE13H_BITMAP_H

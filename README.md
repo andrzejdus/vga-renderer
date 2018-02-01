@@ -22,3 +22,7 @@ Yes. (?)
 * Why are you wasting your time?
 
 I'm not. Programming for DOS is fun and you can learn a lot about computers. :-P
+
+* Mode X is better!
+
+Yes.

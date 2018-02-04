@@ -1,17 +1,17 @@
 #include <stdio.h>
 #include <inttypes.h>
 #include "Mode13h.h"
-#include "Bitmap.h"
+#include "BitmapLoader.h"
 #include "BitmapInfoPrinter.h"
 
 int main() {
-    Bitmap bitmap;
-    if (bitmap.load("assets/test.bmp") != 0) {
+    Bitmap *bitmap = BitmapLoader::load("assets/test.bmp");
+    if (bitmap == NULL) {
         printf("Could not load bitmap\n");
         return 1;
     }
 
-    BitmapInfoPrinter bitmapInfo(&bitmap);
+    BitmapInfoPrinter bitmapInfo(bitmap);
     bitmapInfo.printType();
     bitmapInfo.printSize();
     bitmapInfo.printOffset();
@@ -31,11 +31,11 @@ int main() {
         return 1;
     }
 
-    mode13h.setPalette((uint32_t *) bitmap.getPalette());
+    mode13h.setPalette((uint32_t *) bitmap->getPalette());
 
     for (int x = 0; x < VGA_SCREEN_WIDTH; x++) {
         for (int y = 0; y < VGA_SCREEN_HEIGHT; y++) {
-            mode13h.drawPixel(x, y, bitmap.getPixelColor(x, y));
+            mode13h.drawPixel(x, y, bitmap->getPixel(x, y));
         }
     }
     mode13h.update();
@@ -54,7 +54,7 @@ int main() {
     getchar();
 
 
-    mode13h.drawSprite(100, 100, &bitmap);
+    mode13h.drawSprite(100, 100, bitmap);
     mode13h.update();
 
     printf("Press enter!\n");

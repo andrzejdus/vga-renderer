@@ -38,19 +38,20 @@ struct BitmapPaletteColor {
 
 class Bitmap {
 public:
-    int load(char *fileName); // TODO move to separate class
+    Bitmap(BitmapFileHeader fileHeader, BitmapInfoHeader infoHeader, BitmapPaletteColor *palette,
+           BitmapPixel *pixels);
     BitmapFileHeader getFileHeader();
     BitmapInfoHeader getInfoHeader();
-    BitmapPixel getPixelColor(int x, int y); // TODO should return address (faster?)?
+    BitmapPixel getPixel(int x, int y); // TODO should return address (faster?)?
     BitmapPixel *getPixelsRow(int y);
     BitmapPaletteColor *getPalette();
     BitmapWidth getWidth();
     BitmapHeight getHeight();
 private:
-    BitmapFileHeader bitmapFileHeader;
-    BitmapInfoHeader bitmapInfoHeader;
-    BitmapPaletteColor *paletteData;
-    BitmapPixel *pixelsData;
+    BitmapFileHeader fileHeader;
+    BitmapInfoHeader infoHeader;
+    BitmapPaletteColor *palette;
+    BitmapPixel *pixels;
 };
 
 #endif //MODE13H_BITMAP_H

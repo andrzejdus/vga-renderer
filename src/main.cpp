@@ -63,13 +63,11 @@ int main() {
 //
 //    getchar();
 
-    vgaRenderer.drawFullscreenSprite(&testSprite);
-    vgaRenderer.update();
-
-    getchar();
-
-    vgaRenderer.drawMovableSprite(10, 10, &gunkSprite);
-    vgaRenderer.update();
+    for (int i = 0; i < 100; i++) {
+        vgaRenderer.drawFullscreenSprite(&testSprite);
+        vgaRenderer.drawMovableSprite(i, 10, &gunkSprite);
+        vgaRenderer.update();
+    }
 
     getchar();
 

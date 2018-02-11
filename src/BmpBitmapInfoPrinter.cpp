@@ -1,50 +1,50 @@
 #include <inttypes.h>
 #include <stdio.h>
-#include "BitmapInfoPrinter.h"
-#include "Bitmap.h"
+#include "BmpBitmapInfoPrinter.h"
+#include "BmpBitmap.h"
 
-BitmapInfoPrinter::BitmapInfoPrinter(Bitmap *bitmap) {
+BmpBitmapInfoPrinter::BmpBitmapInfoPrinter(BmpBitmap *bitmap) {
     this->bitmap = bitmap;
 }
 
-void BitmapInfoPrinter::printType() {
+void BmpBitmapInfoPrinter::printType() {
     uint16_t type = this->bitmap->getFileHeader().type;
 
     printf("Type: %c%c\n", type, *(((char *) &type) + 1));
 }
 
-void BitmapInfoPrinter::printSize() {
+void BmpBitmapInfoPrinter::printSize() {
     printf("Size: %u\n", this->bitmap->getFileHeader().size);
 }
 
-void BitmapInfoPrinter::printOffset() {
+void BmpBitmapInfoPrinter::printOffset() {
     printf("Offset: %u\n", this->bitmap->getFileHeader().offset);
 }
 
-void BitmapInfoPrinter::printInfoHeaderSize() {
+void BmpBitmapInfoPrinter::printInfoHeaderSize() {
     printf("Info header size: %u\n", this->bitmap->getInfoHeader().thisHeaderSize);
 }
 
-void BitmapInfoPrinter::printWidth() {
+void BmpBitmapInfoPrinter::printWidth() {
     printf("Width: %u\n", this->bitmap->getInfoHeader().width);
 }
 
-void BitmapInfoPrinter::printHeight() {
+void BmpBitmapInfoPrinter::printHeight() {
     printf("Height: %u\n", this->bitmap->getInfoHeader().height);
 }
 
-void BitmapInfoPrinter::printColorPlanesCount() {
+void BmpBitmapInfoPrinter::printColorPlanesCount() {
     printf("Color planes count: %u\n", this->bitmap->getInfoHeader().colorPlanesCount);
 }
 
-void BitmapInfoPrinter::printBitsPerPixel() {
+void BmpBitmapInfoPrinter::printBitsPerPixel() {
     printf("Bits per pixel: %u\n", this->bitmap->getInfoHeader().bitsPersPixel);
 }
 
-void BitmapInfoPrinter::printCompressionMethod() {
+void BmpBitmapInfoPrinter::printCompressionMethod() {
     printf("Compression method: %u\n", this->bitmap->getInfoHeader().compressionMethod);
 }
 
-void BitmapInfoPrinter::printColorsCount() {
+void BmpBitmapInfoPrinter::printColorsCount() {
     printf("Colors count: %u\n", this->bitmap->getInfoHeader().colorsCount);
 }

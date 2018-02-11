@@ -1,7 +1,7 @@
 #ifndef MODE13H_BITMAPLOADER_H
 #define MODE13H_BITMAPLOADER_H
 
-#include "Bitmap.h"
+#include "BmpBitmap.h"
 
 class BitmapLoader {
 public:

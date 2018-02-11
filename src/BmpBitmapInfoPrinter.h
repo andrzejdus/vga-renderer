@@ -1,11 +1,11 @@
-#ifndef MODE13H_BITMAPINFOPRINTER_H
-#define MODE13H_BITMAPINFOPRINTER_H
+#ifndef MODE13H_BMPBITMAPINFOPRINTER_H
+#define MODE13H_BMPBITMAPINFOPRINTER_H
 
-#include "Bitmap.h"
+#include "BmpBitmap.h"
 
-class BitmapInfoPrinter {
+class BmpBitmapInfoPrinter {
 public:
-    BitmapInfoPrinter(Bitmap *bitmap);
+    BmpBitmapInfoPrinter(BmpBitmap *bitmap);
     void printType();
     void printSize();
     void printOffset();
@@ -20,7 +20,7 @@ public:
     void printColorsCount();
 
 private:
-    Bitmap *bitmap;
+    BmpBitmap *bitmap;
 };
 
-#endif //MODE13H_BITMAPINFOPRINTER_H
+#endif //MODE13H_BMPBITMAPINFOPRINTER_H

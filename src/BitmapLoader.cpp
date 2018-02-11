@@ -11,11 +11,11 @@ static Bitmap *BitmapLoader::load(char *fileName) {
         return NULL;
     }
 
-    BitmapFileHeader fileHeader;
-    BitmapInfoHeader infoHeader;
+    BmpBitmapFileHeader fileHeader;
+    BmpBitmapInfoHeader infoHeader;
 
-    fread(&fileHeader, sizeof(BitmapFileHeader), 1, filePointer);
-    fread(&infoHeader, sizeof(BitmapInfoHeader), 1, filePointer);
+    fread(&fileHeader, sizeof(BmpBitmapFileHeader), 1, filePointer);
+    fread(&infoHeader, sizeof(BmpBitmapInfoHeader), 1, filePointer);
 
     if (infoHeader.thisHeaderSize != 40) {
         printf("Unknown bitmap format, info header size: %u\n", infoHeader.thisHeaderSize);
@@ -59,5 +59,5 @@ static Bitmap *BitmapLoader::load(char *fileName) {
 
     fclose(filePointer);
 
-    return new Bitmap(fileHeader, infoHeader, paletteData, pixelsData);
+    return new BmpBitmap(fileHeader, infoHeader, paletteData, pixelsData);
 }

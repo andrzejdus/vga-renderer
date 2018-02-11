@@ -4,30 +4,7 @@
 #include <inttypes.h>
 
 typedef uint8_t BitmapPixel;
-typedef uint32_t BitmapWidth;
-typedef uint32_t BitmapHeight;
-
-struct BitmapFileHeader {
-    uint16_t type;
-    uint32_t size;
-    uint16_t reserved1;
-    uint16_t reserved2;
-    uint32_t offset;
-};
-
-struct BitmapInfoHeader {
-    uint32_t thisHeaderSize;
-    BitmapWidth width;
-    BitmapHeight height;
-    uint16_t colorPlanesCount;
-    uint16_t bitsPersPixel;
-    uint32_t compressionMethod;
-    uint32_t rawBitmapDataSize;
-    int32_t horizontalPixelsPerMeter;
-    int32_t verticalPixelsPerMeter;
-    uint32_t colorsCount;
-    uint32_t importantColorsCount;
-};
+typedef uint32_t BitmapSize;
 
 struct BitmapPaletteColor {
     uint8_t blue;
@@ -38,20 +15,13 @@ struct BitmapPaletteColor {
 
 class Bitmap {
 public:
-    Bitmap(BitmapFileHeader fileHeader, BitmapInfoHeader infoHeader, BitmapPaletteColor *palette,
-           BitmapPixel *pixels);
-    BitmapFileHeader getFileHeader();
-    BitmapInfoHeader getInfoHeader();
-    BitmapPixel getPixel(int x, int y); // TODO should return address (faster?)?
-    BitmapPixel *getPixelsRow(int y);
-    BitmapPaletteColor *getPalette();
-    BitmapWidth getWidth();
-    BitmapHeight getHeight();
-private:
-    BitmapFileHeader fileHeader;
-    BitmapInfoHeader infoHeader;
-    BitmapPaletteColor *palette;
-    BitmapPixel *pixels;
+    virtual BitmapPixel getPixel(int x, int y) = 0; // TODO should return address (faster?)?
+    virtual BitmapPixel *getPixelsRow(int y) = 0;
+    virtual BitmapPixel *getPixels() = 0;
+    virtual BitmapPaletteColor *getPalette() = 0;
+    virtual BitmapSize getWidth() = 0;
+    virtual BitmapSize getHeight() = 0;
+    virtual BitmapSize getSize() = 0;
 };
 
 #endif //MODE13H_BITMAP_H

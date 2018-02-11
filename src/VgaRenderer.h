@@ -1,5 +1,5 @@
-#ifndef MODE13H_H
-#define MODE13H_H
+#ifndef VGARENDERER_H
+#define VGARENDERER_H
 
 #include <inttypes.h>
 #include "Sprite.h"
@@ -41,7 +41,7 @@
 #define DISPLAY_ENABLE 0x01 /* VGA input status bits */
 #define VRETRACE 0x08
 
-class Mode13h {
+class VgaRenderer {
 public:
     int init();
     void exit();
@@ -63,4 +63,4 @@ private:
 };
 
 
-#endif //MODE13H_H
+#endif //VGARENDERER_H

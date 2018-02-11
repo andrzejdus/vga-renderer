@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <inttypes.h>
-#include "Mode13h.h"
+#include "VgaRenderer.h"
 #include "BitmapLoader.h"
 #include "BmpBitmapInfoPrinter.h"
 
@@ -35,15 +35,15 @@ int main() {
         bitmapInfo.printColorsCount();
     }
 
-    Mode13h mode13h;
+    VgaRenderer vgaRenderer;
 
-    if (mode13h.init() != 0) {
+    if (vgaRenderer.init() != 0) {
         printf("VGA initialization error!\n");
         getchar();
         return 1;
     }
 
-    mode13h.setPalette((uint32_t *) testBitmap->getPalette());
+    vgaRenderer.setPalette((uint32_t *) testBitmap->getPalette());
 
 //    for (int y = 0; y < gunkBitmap->getHeight(); y++) {
 //        for (int x = 0; x < gunkBitmap->getWidth(); x++) {
@@ -63,17 +63,17 @@ int main() {
 //
 //    getchar();
 
-    mode13h.drawFullscreenSprite(&testSprite);
-    mode13h.update();
+    vgaRenderer.drawFullscreenSprite(&testSprite);
+    vgaRenderer.update();
 
     getchar();
 
-    mode13h.drawMovableSprite(10, 10, &gunkSprite);
-    mode13h.update();
+    vgaRenderer.drawMovableSprite(10, 10, &gunkSprite);
+    vgaRenderer.update();
 
     getchar();
 
-    mode13h.exit();
+    vgaRenderer.exit();
 
     return 0;
 }

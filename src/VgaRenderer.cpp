@@ -1,11 +1,11 @@
-#include "Mode13h.h"
+#include "VgaRenderer.h"
 #include "FullscreenSprite.h"
 #include "MovableSprite.h"
 #include <dos.h>
 #include <conio.h>
 #include <mem.h>
 
-int Mode13h::init() {
+int VgaRenderer::init() {
     this->vgaScreenBuffer = (uint8_t *) 0xa0000000;
     this->visiblePageOffset = 0;
     this->hiddenPageOffset = VGA_PLANE_BUFFER_SIZE;
@@ -16,11 +16,11 @@ int Mode13h::init() {
     return 0;
 }
 
-void Mode13h::exit() {
+void VgaRenderer::exit() {
     this->leave();
 }
 
-void Mode13h::update() {
+void VgaRenderer::update() {
     uint16_t tempBuffer = this->visiblePageOffset;
     this->visiblePageOffset = this->hiddenPageOffset;
     this->hiddenPageOffset = tempBuffer;
@@ -34,7 +34,7 @@ void Mode13h::update() {
     while (!(inp(VGA_INPUT_STATUS) & VRETRACE));
 }
 
-void Mode13h::drawPixel(int x, int y, uint8_t color) {
+void VgaRenderer::drawPixel(int x, int y, uint8_t color) {
     int plane = x & 3;
     outp(SC_INDEX, MAP_MASK);
     outp(SC_DATA, 1 << plane);
@@ -42,7 +42,7 @@ void Mode13h::drawPixel(int x, int y, uint8_t color) {
     *(this->vgaScreenBuffer + hiddenPageOffset + (y << 6) + (y << 4) + (x >> 2)) = color;
 }
 
-void Mode13h::drawMovableSprite(int offsetX, int offsetY, MovableSprite *sprite) {
+void VgaRenderer::drawMovableSprite(int offsetX, int offsetY, MovableSprite *sprite) {
     for (int y = 0; y < sprite->getHeight(); y++) {
         for (int x = 0; x < sprite->getWidth(); x++) {
             this->drawPixel(offsetX + x, offsetY + y, sprite->getPixel(x, y));
@@ -50,7 +50,7 @@ void Mode13h::drawMovableSprite(int offsetX, int offsetY, MovableSprite *sprite)
     }
 }
 
-void Mode13h::drawFullscreenSprite(FullscreenSprite *sprite) {
+void VgaRenderer::drawFullscreenSprite(FullscreenSprite *sprite) {
     for (int plane = 0; plane < VGA_PLANES; plane++) {
         outp(SC_INDEX, MAP_MASK);
         outp(SC_DATA, 1 << plane);
@@ -60,7 +60,7 @@ void Mode13h::drawFullscreenSprite(FullscreenSprite *sprite) {
     }
 }
 
-void Mode13h::setPalette(uint32_t *palette) {
+void VgaRenderer::setPalette(uint32_t *palette) {
     outp(PALETTE_INDEX, 0);
 
     for (int i = 0; i < VGA_COLORS_COUNT; i++) {
@@ -74,7 +74,7 @@ void Mode13h::setPalette(uint32_t *palette) {
     }
 }
 
-void Mode13h::enter() {
+void VgaRenderer::enter() {
     union REGS in, out;
 
     in.h.ah = BIOS_GET_VIDEO_MODE;
@@ -86,7 +86,7 @@ void Mode13h::enter() {
     int86(BIOS_VIDEO_INT, &in, &out);
 }
 
-void Mode13h::enableUnchained() {
+void VgaRenderer::enableUnchained() {
     outp(SC_INDEX, MEMORY_MODE);
     outp(SC_DATA, 0x06);
 
@@ -104,7 +104,7 @@ void Mode13h::enableUnchained() {
     outp(CRTC_DATA, 0xe3);
 }
 
-void Mode13h::leave() {
+void VgaRenderer::leave() {
     union REGS in, out;
 
     in.h.ah = 0;

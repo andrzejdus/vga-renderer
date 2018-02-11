@@ -1,11 +1,11 @@
-project : build\mode13h.exe .SYMBOLIC
+project : build\VgaRenderer.exe .SYMBOLIC
 
 !define BLANK ""
 build\main.obj : src\main.cpp .AUTODEPEND
  *wpp src\main.cpp -i="C:\WATCOM/h" -w4 -e25 -od -d2 -bt=dos -fo=build\main.obj -ml -xs -xr
 
-build\Mode13h.obj : src\Mode13h.cpp .AUTODEPEND
- *wpp src\Mode13h.cpp -i="C:\WATCOM/h" -w4 -e25 -od -d2 -bt=dos -fo=build\Mode13h.obj -ml -xs -xr
+build\VgaRenderer.obj : src\VgaRenderer.cpp .AUTODEPEND
+ *wpp src\VgaRenderer.cpp -i="C:\WATCOM/h" -w4 -e25 -od -d2 -bt=dos -fo=build\VgaRenderer.obj -ml -xs -xr
 
 build\BmpBitmap.obj : src\BmpBitmap.cpp .AUTODEPEND
  *wpp src\BmpBitmap.cpp -i="C:\WATCOM/h" -w4 -e25 -od -d2 -bt=dos -fo=build\BmpBitmap.obj -ml -xs -xr
@@ -25,7 +25,7 @@ build\FullscreenSprite.obj : src\FullscreenSprite.cpp .AUTODEPEND
 build\MovableSprite.obj : src\MovableSprite.cpp .AUTODEPEND
  *wpp src\MovableSprite.cpp -i="C:\WATCOM/h" -w4 -e25 -od -d2 -bt=dos -fo=build\MovableSprite.obj -ml -xs -xr
 
-build\mode13h.exe : build\main.obj build\Mode13h.obj build\BmpBitmap.obj build\BmpBitmapInfoPrinter.obj build\BitmapLoader.obj build\Sprite.obj build\FullscreenSprite.obj build\MovableSprite.obj .AUTODEPEND
- @%write build\mode13h.lk1 FIL build\main.obj,build\Mode13h.obj,build\BmpBitmap.obj,build\BmpBitmapInfoPrinter.obj,build\BitmapLoader.obj,build\Sprite.obj,build\FullscreenSprite.obj,build\MovableSprite.obj
- @%append build\mode13h.lk1
- *wlink name build\mode13h d all sys dos op m=build\mode13h op maxe=25 op symf @build\mode13h.lk1
+build\VgaRenderer.exe : build\main.obj build\VgaRenderer.obj build\BmpBitmap.obj build\BmpBitmapInfoPrinter.obj build\BitmapLoader.obj build\Sprite.obj build\FullscreenSprite.obj build\MovableSprite.obj .AUTODEPEND
+ @%write build\VgaRenderer.lk1 FIL build\main.obj,build\VgaRenderer.obj,build\BmpBitmap.obj,build\BmpBitmapInfoPrinter.obj,build\BitmapLoader.obj,build\Sprite.obj,build\FullscreenSprite.obj,build\MovableSprite.obj
+ @%append build\VgaRenderer.lk1
+ *wlink name build\VgaRenderer d all sys dos op m=build\VgaRenderer op maxe=25 op symf @build\VgaRenderer.lk1

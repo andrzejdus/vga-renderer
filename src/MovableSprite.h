@@ -1,7 +1,6 @@
 #ifndef MODE13H_MOVABLESPRITE_H
 #define MODE13H_MOVABLESPRITE_H
 
-
 #include "Sprite.h"
 
 class MovableSprite : public Sprite {
@@ -12,6 +11,5 @@ public:
 private:
     uint8_t *data;
 };
-
 
 #endif //MODE13H_MOVABLESPRITE_H

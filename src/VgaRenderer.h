@@ -62,5 +62,4 @@ private:
     void leave();
 };
 
-
 #endif //VGARENDERER_H

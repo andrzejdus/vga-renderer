@@ -1,5 +1,6 @@
-# Mode 13h
-DOS 16 bit, real mode app that draws some stuff in pure VGA Mode 13h (320 x 200, 256 colors, 18 bit palette). 
+# VGA
+DOS 16 bit, real mode app that draws some stuff on VGA display hardware.
+At the moment code uses [Mode X](https://en.wikipedia.org/wiki/Mode_X).
 
 # How can I build it?
 Use WATCOM compiler, it can cross compile to DOS 16 bit.
@@ -22,7 +23,3 @@ Yes. (?)
 * Why are you wasting your time?
 
 I'm not. Programming for DOS is fun and you can learn a lot about computers. :-P
-
-* Mode X is better!
-
-Yes.

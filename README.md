@@ -1,5 +1,5 @@
 # VGA
-DOS 16 bit, real mode app that draws some stuff on VGA display hardware.
+DOS 16 bit, real mode app that draws stuff on VGA display hardware.
 At the moment code uses [Mode X](https://en.wikipedia.org/wiki/Mode_X).
 
 # How can I build it?

@@ -2,24 +2,8 @@
 #include "stdio.h"
 
 PlanarSprite::PlanarSprite(Bitmap *bitmap) : Sprite(bitmap) {
-    // TODO redundant for loops, should be calculated
     for (int plane = 0; plane < VGA_PLANES; plane++) {
-        this->planeWidths[plane] = 0;
-    }
-
-    for (int y = 0; y < bitmap->getHeight(); y++) {
-        for (int x = 0; x < bitmap->getWidth(); x++) {
-            int plane = x & (VGA_PLANES - 1);
-
-            this->planeWidths[plane]++;
-        }
-    }
-
-    for (int plane = 0; plane < VGA_PLANES; plane++) {
-        this->planeWidths[plane] /= bitmap->getHeight();
-    }
-
-    for (int plane = 0; plane < VGA_PLANES; plane++) {
+        this->planeWidths[plane] = this->getWidth() / VGA_PLANES + (plane < (this->getWidth() % VGA_PLANES) ? 1 : 0);
         this->planeData[plane] = new uint8_t[bitmap->getHeight() * this->getPlaneWidth(plane)];
     }
 

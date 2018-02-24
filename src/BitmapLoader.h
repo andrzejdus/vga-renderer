@@ -1,5 +1,5 @@
-#ifndef MODE13H_BITMAPLOADER_H
-#define MODE13H_BITMAPLOADER_H
+#ifndef VGARENDERER_BITMAPLOADER_H
+#define VGARENDERER_BITMAPLOADER_H
 
 #include "BmpBitmap.h"
 
@@ -8,4 +8,4 @@ public:
     static Bitmap *load(char *fileName);
 };
 
-#endif //MODE13H_BITMAPLOADER_H
+#endif //VGARENDERER_BITMAPLOADER_H

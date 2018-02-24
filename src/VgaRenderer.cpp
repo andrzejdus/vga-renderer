@@ -1,17 +1,20 @@
 #include "VgaRenderer.h"
-#include "FullscreenSprite.h"
-#include "MovableSprite.h"
+#include "PlanarSprite.h"
 #include <dos.h>
 #include <conio.h>
 #include <mem.h>
 
-int VgaRenderer::init() {
+int VgaRenderer::init(uint16_t virtualWidth, uint16_t virtualHeight) {
+    this->virtualWidth = virtualWidth;
+    this->vgaBufferSize = virtualWidth / 4 * virtualHeight;
     this->vgaScreenBuffer = (uint8_t *) 0xa0000000;
     this->visiblePageOffset = 0;
-    this->hiddenPageOffset = VGA_PLANE_BUFFER_SIZE;
+    this->hiddenPageOffset =  this->vgaBufferSize;
 
     this->enter();
     this->enableUnchained();
+    outp(CRTC_INDEX, 0x13);
+    outp(CRTC_DATA, virtualWidth / 8);
 
     return 0;
 }
@@ -20,37 +23,55 @@ void VgaRenderer::exit() {
     this->leave();
 }
 
-void VgaRenderer::update() {
+void VgaRenderer::update(uint16_t offsetX, uint16_t offsetY) {
     uint16_t tempBuffer = this->visiblePageOffset;
     this->visiblePageOffset = this->hiddenPageOffset;
     this->hiddenPageOffset = tempBuffer;
 
-    uint16_t highAddress = HIGH_ADDRESS | (visiblePageOffset & 0xff00);
-    uint16_t lowAddress  = LOW_ADDRESS  | (visiblePageOffset << 8);
+    uint16_t highAddress = HIGH_ADDRESS | ((visiblePageOffset + offsetX / 4) & 0xff00);
+    uint16_t lowAddress  = LOW_ADDRESS  | ((visiblePageOffset + offsetX / 4) << 8);
 
     while ((inp(VGA_INPUT_STATUS) & DISPLAY_ENABLE));
     outpw(CRTC_INDEX, highAddress);
     outpw(CRTC_INDEX, lowAddress);
+    outp(0x03c0, 0x13);
+    int o[4];
+    o[0] = 0;
+    o[1] = 2;
+    o[2] = 4;
+    o[3] = 6;
+    outp(0x03c0, o[offsetX % 4]);
     while (!(inp(VGA_INPUT_STATUS) & VRETRACE));
 }
 
 void VgaRenderer::drawPixel(int x, int y, uint8_t color) {
-    int plane = x & 3;
+    int plane = x & (VGA_PLANES - 1);
     outp(SC_INDEX, MAP_MASK);
     outp(SC_DATA, 1 << plane);
 
-    *(this->vgaScreenBuffer + hiddenPageOffset + (y << 6) + (y << 4) + (x >> 2)) = color;
+    uint16_t drawOffset = hiddenPageOffset + this->virtualWidth / VGA_PLANES * y + x / VGA_PLANES;
+    *(this->vgaScreenBuffer + drawOffset) = color;
 }
 
-void VgaRenderer::drawMovableSprite(int offsetX, int offsetY, MovableSprite *sprite) {
-    for (int y = 0; y < sprite->getHeight(); y++) {
-        for (int x = 0; x < sprite->getWidth(); x++) {
-            this->drawPixel(offsetX + x, offsetY + y, sprite->getPixel(x, y));
+void VgaRenderer::drawPlanarSprite(int x, int y, PlanarSprite *sprite) {
+    const uint16_t virtualPlaneWidth = this->virtualWidth / VGA_PLANES;
+
+    for (int plane = 0; plane < VGA_PLANES; plane++) {
+        outp(SC_INDEX, MAP_MASK);
+        outp(SC_DATA, 1 << plane);
+
+        const uint8_t *spritePlaneData = sprite->getPlaneData(plane);
+        const uint16_t spritePlaneWidth = sprite->getPlaneWidth(plane);
+
+        for (int line = 0; line < sprite->getHeight(); line++) {
+            memcpy(this->vgaScreenBuffer + hiddenPageOffset + virtualPlaneWidth * (y + line) + x / VGA_PLANES,
+                   spritePlaneData + spritePlaneWidth * line,
+                   spritePlaneWidth);
         }
     }
 }
 
-void VgaRenderer::drawFullscreenSprite(FullscreenSprite *sprite) {
+void VgaRenderer::drawFullscreenSprite(PlanarSprite *sprite) {
     for (int plane = 0; plane < VGA_PLANES; plane++) {
         outp(SC_INDEX, MAP_MASK);
         outp(SC_DATA, 1 << plane);

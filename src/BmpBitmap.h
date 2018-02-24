@@ -1,5 +1,5 @@
-#ifndef MODE13H_BMPBITMAP_H
-#define MODE13H_BMPBITMAP_H
+#ifndef VGARENDERER_BMPBITMAP_H
+#define VGARENDERER_BMPBITMAP_H
 
 #include <inttypes.h>
 #include "Bitmap.h"
@@ -49,4 +49,4 @@ private:
     BitmapPixel *pixels;
 };
 
-#endif //MODE13H_BMPBITMAP_H
+#endif //VGARENDERER_BMPBITMAP_H

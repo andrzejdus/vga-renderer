@@ -1,13 +1,7 @@
-#ifndef MODE13H_SPRITE_H
-#define MODE13H_SPRITE_H
+#ifndef VGARENDERER_SPRITE_H
+#define VGARENDERER_SPRITE_H
 
-
-#include "BmpBitmap.h"
-
-#define VGA_PLANES 4
-#define VGA_SCREEN_BUFFER_SIZE 64000
-#define VGA_PLANE_BUFFER_SIZE VGA_SCREEN_BUFFER_SIZE / 4
-#define VGA_SCREEN_WIDTH 320
+#include "Bitmap.h"
 
 class Sprite {
 public:
@@ -22,5 +16,4 @@ private:
     int height;
 };
 
-
-#endif //MODE13H_SPRITE_H
+#endif //VGARENDERER_SPRITE_H

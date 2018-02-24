@@ -3,8 +3,7 @@
 
 #include <inttypes.h>
 #include "Sprite.h"
-#include "FullscreenSprite.h"
-#include "MovableSprite.h"
+#include "PlanarSprite.h"
 
 // TODO clean defines
 #define BIOS_VIDEO_INT 0x10
@@ -43,19 +42,20 @@
 
 class VgaRenderer {
 public:
-    int init();
+    int init(uint16_t virtualWidth = 320, uint16_t virtualHeight = 200);
     void exit();
-    void update();
+    void update(uint16_t offsetX = 0, uint16_t offsetY = 0);
     void drawPixel(int x, int y, uint8_t color);
-    void drawMovableSprite(int x, int y, MovableSprite *sprite);
-    void drawFullscreenSprite(FullscreenSprite *sprite);
+    void drawPlanarSprite(int x, int y, PlanarSprite *sprite);
+    void drawFullscreenSprite(PlanarSprite *sprite);
     void setPalette(uint32_t *palette);
-
 private:
-    int previousVideoMode;
+    uint16_t virtualWidth;
+    uint16_t vgaBufferSize;
     uint8_t *vgaScreenBuffer;
     uint16_t visiblePageOffset;
     uint16_t hiddenPageOffset;
+    int previousVideoMode;
 
     void enter();
     void enableUnchained();

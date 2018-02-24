@@ -1,5 +1,5 @@
-#ifndef MODE13H_BITMAP_H
-#define MODE13H_BITMAP_H
+#ifndef VGARENDERER_BITMAP_H
+#define VGARENDERER_BITMAP_H
 
 #include <inttypes.h>
 
@@ -24,4 +24,4 @@ public:
     virtual BitmapSize getSize() = 0;
 };
 
-#endif //MODE13H_BITMAP_H
+#endif //VGARENDERER_BITMAP_H

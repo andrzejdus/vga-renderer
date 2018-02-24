@@ -6,14 +6,14 @@
 
 int VgaRenderer::init(uint16_t virtualWidth, uint16_t virtualHeight) {
     this->virtualWidth = virtualWidth;
-    this->vgaBufferSize = virtualWidth / 4 * virtualHeight;
-    this->vgaScreenBuffer = (uint8_t *) 0xa0000000;
+    this->vgaPlaneBufferSize = virtualWidth / VGA_PLANES * virtualHeight;
+    this->vgaScreenBuffer = (uint8_t *) VGA_MEMORY_ADDRESS;
     this->visiblePageOffset = 0;
-    this->hiddenPageOffset =  this->vgaBufferSize;
+    this->hiddenPageOffset =  this->vgaPlaneBufferSize;
 
     this->enter();
     this->enableUnchained();
-    outp(CRTC_INDEX, 0x13);
+    outp(CRTC_INDEX, CRTC_OFFSET);
     outp(CRTC_DATA, virtualWidth / 8);
 
     return 0;
@@ -28,25 +28,25 @@ void VgaRenderer::update(uint16_t offsetX, uint16_t offsetY) {
     this->visiblePageOffset = this->hiddenPageOffset;
     this->hiddenPageOffset = tempBuffer;
 
-    uint16_t highAddress = HIGH_ADDRESS | ((visiblePageOffset + offsetX / 4) & 0xff00);
-    uint16_t lowAddress  = LOW_ADDRESS  | ((visiblePageOffset + offsetX / 4) << 8);
+    uint16_t highAddress = CRTC_HIGH_ADDRESS | ((visiblePageOffset + offsetX / 4) & 0xff00);
+    uint16_t lowAddress  = CRTC_LOW_ADDRESS  | ((visiblePageOffset + offsetX / 4) << 8);
 
-    while ((inp(VGA_INPUT_STATUS) & DISPLAY_ENABLE));
+    while ((inp(INPUT_STATUS_1) & INPUT_STATUS_1_DISPLAY_ENABLE));
     outpw(CRTC_INDEX, highAddress);
     outpw(CRTC_INDEX, lowAddress);
-    outp(0x03c0, 0x13);
+    outp(AC_INDEX_AND_DATA, AC_PANNING);
     int o[4];
     o[0] = 0;
     o[1] = 2;
     o[2] = 4;
     o[3] = 6;
-    outp(0x03c0, o[offsetX % 4]);
-    while (!(inp(VGA_INPUT_STATUS) & VRETRACE));
+    outp(AC_INDEX_AND_DATA, o[offsetX % 4]);
+    while (!(inp(INPUT_STATUS_1) & INPUT_STATUS_1_VRETRACE));
 }
 
 void VgaRenderer::drawPixel(int x, int y, uint8_t color) {
     int plane = x & (VGA_PLANES - 1);
-    outp(SC_INDEX, MAP_MASK);
+    outp(SC_INDEX, SC_MAP_MASK);
     outp(SC_DATA, 1 << plane);
 
     uint16_t drawOffset = hiddenPageOffset + this->virtualWidth / VGA_PLANES * y + x / VGA_PLANES;
@@ -57,7 +57,7 @@ void VgaRenderer::drawPlanarSprite(int x, int y, PlanarSprite *sprite) {
     const uint16_t virtualPlaneWidth = this->virtualWidth / VGA_PLANES;
 
     for (int plane = 0; plane < VGA_PLANES; plane++) {
-        outp(SC_INDEX, MAP_MASK);
+        outp(SC_INDEX, SC_MAP_MASK);
         outp(SC_DATA, 1 << plane);
 
         const uint8_t *spritePlaneData = sprite->getPlaneData(plane);
@@ -73,11 +73,10 @@ void VgaRenderer::drawPlanarSprite(int x, int y, PlanarSprite *sprite) {
 
 void VgaRenderer::drawFullscreenSprite(PlanarSprite *sprite) {
     for (int plane = 0; plane < VGA_PLANES; plane++) {
-        outp(SC_INDEX, MAP_MASK);
+        outp(SC_INDEX, SC_MAP_MASK);
         outp(SC_DATA, 1 << plane);
 
-        memcpy(this->vgaScreenBuffer + hiddenPageOffset, sprite->getPlaneData(plane),
-               VGA_PLANE_BUFFER_SIZE);
+        memcpy(this->vgaScreenBuffer + hiddenPageOffset, sprite->getPlaneData(plane), this->vgaPlaneBufferSize);
     }
 }
 
@@ -108,20 +107,20 @@ void VgaRenderer::enter() {
 }
 
 void VgaRenderer::enableUnchained() {
-    outp(SC_INDEX, MEMORY_MODE);
+    outp(SC_INDEX, SC_MEMORY_MODE);
     outp(SC_DATA, 0x06);
 
-    outpw(SC_INDEX, ALL_PLANES);
+    outpw(SC_INDEX, SC_ALL_PLANES);
 
-    uint8_t *ptr = (uint8_t *) 0xa0000000;
+    uint8_t *ptr = (uint8_t *) VGA_MEMORY_ADDRESS;
     for (uint16_t i = 0; i < 0xFFFF; i++) {
         *ptr++ = 0;
     }
 
-    outp(CRTC_INDEX, UNDERLINE_LOCATION);
+    outp(CRTC_INDEX, CRTC_UNDERLINE_LOCATION);
     outp(CRTC_DATA, 0x00);
 
-    outp(CRTC_INDEX, MODE_CONTROL);
+    outp(CRTC_INDEX, CRTC_MODE_CONTROL);
     outp(CRTC_DATA, 0xe3);
 }
 

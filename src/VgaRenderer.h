@@ -11,34 +11,41 @@
 #define BIOS_SET_VIDEO_MODE 0x0
 #define VGA_256_COLOR_MODE 0x13
 #define VGA_COLORS_COUNT 256
-#define VGA_SCREEN_WIDTH 320
-#define VGA_SCREEN_HEIGHT 200
-#define VGA_SCREEN_BUFFER_SIZE 64000
-#define VGA_PLANE_BUFFER_SIZE VGA_SCREEN_BUFFER_SIZE / 4
 #define VGA_MEMORY_ADDRESS 0xa0000000
 #define VGA_PLANES 4
 
-#define SC_INDEX 0x03c4 /* VGA sequence controller */
-#define SC_DATA 0x03c5
-#define PALETTE_INDEX 0x03c8 /* VGA digital-to-analog converter */
+/* VGA DAC palette controller */
+#define PALETTE_INDEX 0x03c8
 #define PALETTE_DATA 0x03c9
-#define GC_INDEX 0x03ce /* VGA graphics controller */
-#define GC_DATA 0x03cf
-#define CRTC_INDEX 0x03d4 /* VGA CRT controller */
+
+/* VGA sequence controller */
+#define SC_INDEX 0x03c4
+#define SC_DATA 0x03c5
+/* Sequence controller registers */
+#define SC_MAP_MASK 0x02
+#define SC_ALL_PLANES 0xff02
+#define SC_MEMORY_MODE 0x04
+
+/* CRT controller */
+#define CRTC_INDEX 0x03d4
 #define CRTC_DATA 0x03d5
-#define VGA_INPUT_STATUS 0x3da
+/* CRT controller registers */
+#define CRTC_OFFSET 0x13
+#define CRTC_HIGH_ADDRESS 0x0C
+#define CRTC_LOW_ADDRESS 0x0D
+#define CRTC_UNDERLINE_LOCATION 0x14
+#define CRTC_MODE_CONTROL 0x17
 
-#define MAP_MASK 0x02 /* Sequence controller registers */
-#define ALL_PLANES 0xff02
-#define MEMORY_MODE 0x04
+/* Attribute controller */
+#define AC_INDEX_AND_DATA 0x03c0
+/* Attribute controller registers */
+#define AC_PANNING 0x13
 
-#define HIGH_ADDRESS 0x0C /* CRT controller registers */
-#define LOW_ADDRESS 0x0D
-#define UNDERLINE_LOCATION 0x14
-#define MODE_CONTROL 0x17
-
-#define DISPLAY_ENABLE 0x01 /* VGA input status bits */
-#define VRETRACE 0x08
+/* VGA input status 1 */
+#define INPUT_STATUS_1 0x3da
+/* VGA input status 1 bits */
+#define INPUT_STATUS_1_DISPLAY_ENABLE 0x01
+#define INPUT_STATUS_1_VRETRACE 0x08
 
 class VgaRenderer {
 public:
@@ -51,7 +58,7 @@ public:
     void setPalette(uint32_t *palette);
 private:
     uint16_t virtualWidth;
-    uint16_t vgaBufferSize;
+    uint16_t vgaPlaneBufferSize;
     uint8_t *vgaScreenBuffer;
     uint16_t visiblePageOffset;
     uint16_t hiddenPageOffset;

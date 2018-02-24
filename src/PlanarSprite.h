@@ -12,6 +12,8 @@ public:
     const uint8_t *getPlaneData(int plane) const;
     uint16_t getPlaneWidth(int plane);
 private:
+    uint8_t *getPixelAddress(int x, int y) const;
+
     uint8_t *planeData[4];
     uint16_t planeWidths[4];
 };

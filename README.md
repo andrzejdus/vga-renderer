@@ -9,17 +9,7 @@ Use WATCOM compiler, it can cross compile targeting DOS 16 bit.
 DOSBox or real hardware with DOS!
 
 # Why?
-* DOS?
-
-Yes.
-* 16 bit?
-
-Yes.
-
-* Are you mad?
-
-Yes. (?)
-
-* Why are you wasting your time?
-
-I'm not. Programming for DOS is fun and you can learn a lot about computers. :-P
+* DOS? Yes.
+* 16 bit? Yes.
+* Are you mad? No. (?)
+* Why are you wasting your time? I'm not. Programming for DOS is fun and you can learn a lot about computers. :-P

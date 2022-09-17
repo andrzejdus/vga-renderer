@@ -51,12 +51,14 @@ int runTest1(VgaRenderer *vgaRenderer) {
     Bitmap *testBitmap = loadBitmap("assets/test.bmp");
     Bitmap *gunkBitmap = loadBitmap("assets/gunk.bmp");
     if (testBitmap == NULL || gunkBitmap == NULL) {
+        printf("Could not load bitmaps");
         return 1;
     }
 
     PlanarSprite *testSprite = loadSprite(testBitmap);
     PlanarSprite *gunkSprite = loadSprite(gunkBitmap);
     if (testSprite == NULL || gunkSprite == NULL) {
+        printf("Could not load sprites");
         return 1;
     }
 

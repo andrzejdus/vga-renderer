@@ -3,7 +3,9 @@ DOS 16 bit, real mode app that draws stuff on VGA display hardware.
 At the moment code uses [Mode X](https://en.wikipedia.org/wiki/Mode_X).
 
 # How can I build it?
-Use WATCOM compiler, it can cross compile targeting DOS 16 bit.
+Use [WATCOM compiler](https://github.com/open-watcom/open-watcom), it can cross compile targeting DOS 16 bit.
+
+Remember to add it to path. Than you should be able to build that project using [bin/build.bat](https://github.com/andrzejdus/vga-renderer/blob/master/bin/build.bat) script.
 
 # How can I run it?
 DOSBox or real hardware with DOS!

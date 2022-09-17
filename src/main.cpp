@@ -15,7 +15,7 @@ Bitmap *loadBitmap(char *filename) {
         return NULL;
     }
 
-    printf("Done\n");
+    printf("Done loading bitmap\n");
 
     if (dynamic_cast<BmpBitmap *>(bitmap)) {
         BmpBitmapInfoPrinter bitmapInfo((BmpBitmap *)bitmap);
@@ -96,7 +96,7 @@ int runTest1(VgaRenderer *vgaRenderer) {
         vgaRenderer->drawPlanarSprite(0, 0, gunkSprite);
         vgaRenderer->drawPlanarSprite(0, 132, gunkSprite);
         vgaRenderer->drawPixel(virtualWidth / 2, 0, i % 2 + 5);
-        vgaRenderer->update(i, 0);
+        vgaRenderer->flipPage(i, 0);
     }
 
     return 0;
@@ -106,12 +106,14 @@ int runTest2(VgaRenderer *vgaRenderer) {
     Bitmap *wallX = loadBitmap("assets/wall-x.bmp");
     Bitmap *wallY = loadBitmap("assets/wall-y.bmp");
     if (wallX == NULL || wallY == NULL) {
+        printf("Could not load bitmaps");
         return 1;
     }
 
     PlanarSprite *wallXSprite = loadSprite(wallX);
     PlanarSprite *wallYSprite = loadSprite(wallY);
     if (wallXSprite == NULL || wallYSprite == NULL) {
+        printf("Could not load sprites");
         return 1;
     }
 
@@ -123,8 +125,16 @@ int runTest2(VgaRenderer *vgaRenderer) {
     }
     vgaRenderer->setPalette((uint32_t *) wallX->getPalette());
 
-    vgaRenderer->drawPlanarSprite(0, 0, wallXSprite);
-    vgaRenderer->drawPlanarSprite(20, 0, wallYSprite);
+    vgaRenderer->drawPlanarSprite(wallXSprite->getWidth(), 0, wallXSprite);
+    // y
+    for (int i = 0; i < 10; i++) {
+        // vgaRenderer->drawPlanarSprite(0, (i) * wallYSprite->getHeight(), wallYSprite);
+    }
+    // x
+    for (int i = 0; i < 10; i++) {
+        vgaRenderer->drawPlanarSprite(i * wallXSprite->getWidth(), 0, wallXSprite);
+    }
+    vgaRenderer->flipPage(0, 0);
     
     getchar();
     
@@ -134,7 +144,7 @@ int runTest2(VgaRenderer *vgaRenderer) {
 int main() {
     VgaRenderer *vgaRenderer = new VgaRenderer();
 
-    runTest2(vgaRenderer);
+    runTest1(vgaRenderer);
 
     vgaRenderer->exit();
 

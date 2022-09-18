@@ -57,7 +57,7 @@ else
 }
 
 # define wcl arguments here
-[string[]]$wclArguments = ("-w4", "-e25", "-od", "-d2", "-ml", "-xs", "-xr", "-bc", "-bt=DOS", "-fo=""./obj/""", "-fe=""./build/vr.exe""")
+[string[]]$wclArguments = ("-zq", "-w4", "-e25", "-od", "-d0", "-ml", "-xs", "-xr", "-bc", "-bt=DOS", "-fo=""./obj/""", "-fe=""./build/vr.exe""")
 
 # Retrieve all source code files (c, cpp) from src directory
 $files = (Get-ChildItem -Path "./src" -Filter "*" -Recurse | Where-Object { $_.Extension.ToLowerInvariant() -in (".c", ".cpp", ".asm")} | Select-Object -ExpandProperty FullName | ForEach-Object { """{0}""" -f $_ }  )

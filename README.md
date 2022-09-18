@@ -1,6 +1,6 @@
 # VGA DOS Renderer
 DOS 16 bit, real mode app that draws stuff on VGA display hardware.
-At the moment code uses [Mode X](https://en.wikipedia.org/wiki/Mode_X).
+At the moment code uses [Mode X/Y](https://en.wikipedia.org/wiki/Mode_X).
 
 ## Dependences
 * [WATCOM compiler](https://github.com/open-watcom/open-watcom-v2), it can cross compile targeting DOS 16 bit

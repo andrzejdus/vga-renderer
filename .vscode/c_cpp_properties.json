@@ -5,7 +5,8 @@
             "includePath": [
                 "${workspaceFolder}/src/**",
                 "c:/watcom/h/**",
-                "/usr/bin/watcom/h/**"
+                "/usr/bin/watcom/h/**",
+                "/opt/watcom/h/**"
             ],
             "defines": [
                 "_DEBUG",
@@ -23,7 +24,8 @@
             "includePath": [
                 "${workspaceFolder}/src/**",
                 "c:/watcom/h/**",
-                "/usr/bin/watcom/h/**"
+                "/usr/bin/watcom/h/**",
+                "/opt/watcom/h/**"
             ],            
             "defines": [
                 "_DEBUG",

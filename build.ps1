@@ -80,4 +80,4 @@ if(-not (Test-Path "./obj"))
 & $command $wclArguments
 
 # Copy assets to build
-Copy-Item .\assets\** .\build\assets
+Copy-Item -Path "./assets" -Destination "./build/assets" -recurse -Force

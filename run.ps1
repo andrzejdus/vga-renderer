@@ -1,9 +1,9 @@
 Clear-Host
 
-[string]$binaryPath = 'C:\Program Files (x86)\DOSBox-0.74-3\DOSBox.exe';
+# Expect dosbox in PATH
+[string]$command = 'dosbox';
 
-# Check if DosBox is in the tools directory
-if(Test-Path -Path $binaryPath)
+if(Get-Command $command)
 {
     Write-Information 'DOSBox found'
 }
@@ -14,6 +14,6 @@ else
     exit 2
 }
 
-[string[]]$dosboxArguments = ('.\build\vr.exe', '-exit', '-noconsole')
+[string[]]$dosboxArguments = ('./build/vr.exe', '-noconsole')
 
-& $binaryPath $dosboxArguments
+& $command $dosboxArguments

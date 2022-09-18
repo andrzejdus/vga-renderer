@@ -54,10 +54,14 @@ class VgaRenderer {
 public:
     int init(uint16_t virtualWidth = 320, uint16_t virtualHeight = 200);
     void exit();
-    void flipPage(uint16_t offsetX = 0, uint16_t offsetY = 0);
+
+    void flipPage();
+    void panPage(uint16_t offsetX, uint16_t offsetY);
+
     void drawPixel(int x, int y, uint8_t color);
     void drawPlanarSprite(int x, int y, PlanarSprite *sprite);
     void drawFullscreenSprite(PlanarSprite *sprite);
+    
     void setPalette(uint32_t *palette);
 private:
     uint16_t virtualWidth;

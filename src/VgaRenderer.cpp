@@ -23,13 +23,31 @@ void VgaRenderer::exit() {
     this->enterPreviousVideoMode();
 }
 
-void VgaRenderer::flipPage(uint16_t offsetX, uint16_t offsetY) {
+void VgaRenderer::flipPage() {
     uint16_t tempBuffer = this->visiblePageOffset;
     this->visiblePageOffset = this->hiddenPageOffset;
     this->hiddenPageOffset = tempBuffer;
 
-    uint16_t highAddress = VGA_CRTC_HIGH_ADDRESS_REGISTER | ((visiblePageOffset + offsetX / 4) & 0xff00);
-    uint16_t lowAddress  = VGA_CRTC_LOW_ADDRESS_REGISTER  | ((visiblePageOffset + offsetX / 4) << 8);
+    uint16_t highAddress = VGA_CRTC_HIGH_ADDRESS_REGISTER | (visiblePageOffset & 0xff00);
+    uint16_t lowAddress  = VGA_CRTC_LOW_ADDRESS_REGISTER  | (visiblePageOffset << 8);
+
+    this->waitForDisplayEnable();
+
+    /*
+    outpw(VGA_CRTC_INDEX, highAddress);
+    equals to
+    outp(VGA_CRTC_INDEX, VGA_CRTC_HIGH_ADDRESS_REGISTER);
+    outp(VGA_CRTC_DATA, (visiblePageOffset & 0xff00) >> 8);
+    */
+    outpw(VGA_CRTC_INDEX, highAddress);
+    outpw(VGA_CRTC_INDEX, lowAddress);
+    
+    this->waitForVretrace();
+}
+
+void VgaRenderer::panPage(uint16_t offsetX, uint16_t offsetY) {
+    uint16_t highAddress = VGA_CRTC_HIGH_ADDRESS_REGISTER | ((this->visiblePageOffset + offsetX / 4) & 0xff00);
+    uint16_t lowAddress  = VGA_CRTC_LOW_ADDRESS_REGISTER  | ((this->visiblePageOffset + offsetX / 4) << 8);
 
     this->waitForDisplayEnable();
 

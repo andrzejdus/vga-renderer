@@ -96,7 +96,7 @@ int runTest1(VgaRenderer *vgaRenderer) {
         vgaRenderer->drawPlanarSprite(0, 0, gunkSprite);
         vgaRenderer->drawPlanarSprite(0, 132, gunkSprite);
         vgaRenderer->drawPixel(virtualWidth / 2, 0, i % 2 + 5);
-        vgaRenderer->flipPage(i, 0);
+        vgaRenderer->panPage(i, 0);
     }
 
     return 0;
@@ -134,7 +134,7 @@ int runTest2(VgaRenderer *vgaRenderer) {
     for (int i = 0; i < 10; i++) {
         vgaRenderer->drawPlanarSprite(i * wallXSprite->getWidth(), 0, wallXSprite);
     }
-    vgaRenderer->flipPage(0, 0);
+    vgaRenderer->flipPage();
     
     getchar();
     

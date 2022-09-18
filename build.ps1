@@ -16,59 +16,54 @@ param(
     [parameter(Mandatory = $false)][string]$architecture = "16bit"    
 )
 
-[string]$operatingSystem = "Windows"
-# Watcom install path - assume root
-[string]$watcomInstallPath = "C:/WATCOM"
-
-# if platform is Unix change install path
-if($IsLinux)
-{    
-    $watcomInstallPath = "/usr/bin/watcom"    
+[string]$watcomInstallPath = $env:WATCOM
+if(-not (Test-Path $watcomInstallPath))
+{
+    Write-Error "WATCOM environment variable not set"
+    exit 2
 }
+
+if($env:PATH.contains($watcomInstallPath) -ne $true)
+{
+    Write-Warning "Seems that WATCOM install path is not in PATH. Are your binaries in non-standard location or WATCOM binaries are not PATH?"
+}
+
+# Set relevant environment variables
+$env:EDPATH = "$watcomInstallPath/eddat"
+
+if($IsWindows)
+{
+    $env:INCLUDE = "$watcomInstallPath/h;$watcomInstallPath/h/nt"
+}
+else
+{
+    $env:INCLUDE = "$watcomInstallPath/h"
+}
+
+[string]$command = "wcl"
+if($architecture -eq "32bit")
+{
+    $command = "wcl386"
+}
+
+if(Get-Command $command)
+{
+    Write-Information "wcl command found"
+}
+else
+{
+    Write-Error "wcl command not found - is PATH environment set correctly?"
+    exit 2
+}
+
+# define wcl arguments here
+[string[]]$wclArguments = ("-w4", "-e25", "-od", "-d2", "-ml", "-xs", "-xr", "-bc", "-bt=DOS", "-fo=""./obj/""", "-fe=""./build/vr.exe""")
 
 # Retrieve all source code files (c, cpp) from src directory
 $files = (Get-ChildItem -Path "./src" -Filter "*" -Recurse | Where-Object { $_.Extension.ToLowerInvariant() -in (".c", ".cpp", ".asm")} | Select-Object -ExpandProperty FullName | ForEach-Object { """{0}""" -f $_ }  )
 
-# Check environment variables. If Environment contains watcom install path we will assume it has been set correctly
-if($env:PATH.contains($watcomInstallPath) -ne $true)
-{
-    # Deconstruct environment path
-    $existingPath = $env:PATH -split ";"
-
-
-    if($IsWindows)
-    {
-        # Add watcom paths
-        $existingPath += ("$watcomInstallPath/binnt64", "$watcomInstallPath/binnt")
-    }
-    else
-    {
-        $existingPath += ("$watcomInstallPath/binl")
-    }
-
-    [string]$pathSeparator = ";"
-
-    if($operatingSystem -ne "Windows")
-    {
-        $pathSeparator = ":"
-    }
-
-    # Set new PATH environment variables
-    # $env:PATH = ($existingPath | Join-String -Separator $pathSeparator)
-
-    # Set relevant environment variables
-    $env:WATCOM = $watcomInstallPath
-    $env:EDPATH = "$watcomInstallPath/eddat"
-    
-    if($operatingSystem -eq "Windows")
-    {
-        $env:INCLUDE = "$watcomInstallPath/h;$watcomInstallPath/h/nt"
-    }
-    else
-    {
-        $env:INCLUDE = "$watcomInstallPath/h"
-    }
-}
+# append files to compile to arguments
+$wclArguments += $files
 
 # Create build and obj directories if they don't exist
 if(-not (Test-Path "./build"))
@@ -81,26 +76,8 @@ if(-not (Test-Path "./obj"))
     New-Item "./obj" -ItemType Directory
 }
 
-# define wcl arguments here
-[string[]]$wclArguments = ("-w4", "-e25", "-od", "-d2", "-ml", "-xs", "-xr", "-bc", "-bt=DOS", "-fo=""./obj/""", "-fe=""./build/vr.exe""")
-
-# append files to compile to arguments
-$wclArguments += $files
-
-# if($release -eq $false)
-# {
-     #$wclArguments += "-d2"
-# }
-
-[string]$command = "wcl"
-
-# Compile and link. Output files to obj directory and put the binary in bin
-Write-Host $architecture
-if($architecture -eq "32bit")
-{
-    $command = "wcl386"
-}
-
+# Compile and link. Output files to obj directory and put the binary in build
 & $command $wclArguments
 
+# Copy assets to build
 Copy-Item .\assets\** .\build\assets

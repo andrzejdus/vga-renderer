@@ -96,7 +96,8 @@ int runTest1(VgaRenderer *vgaRenderer) {
         vgaRenderer->drawPlanarSprite(0, 0, gunkSprite);
         vgaRenderer->drawPlanarSprite(0, 132, gunkSprite);
         vgaRenderer->drawPixel(virtualWidth / 2, 0, i % 2 + 5);
-        vgaRenderer->panPage(i, 0);
+        vgaRenderer->setPanOffset(i, 0);
+        vgaRenderer->flipPage();
     }
 
     return 0;

@@ -10,6 +10,8 @@ int VgaRenderer::init(uint16_t virtualWidth, uint16_t virtualHeight) {
     this->vgaScreenBuffer = (uint8_t *) VGA_MEMORY_ADDRESS;
     this->visiblePageOffset = 0;
     this->hiddenPageOffset =  this->vgaPlaneBufferSize;
+    this->panOffsetX = 0;
+    this->panOffsetY = 0;
 
     this->enterVgaMode13();
     this->enableModeY();
@@ -28,26 +30,12 @@ void VgaRenderer::flipPage() {
     this->visiblePageOffset = this->hiddenPageOffset;
     this->hiddenPageOffset = tempBuffer;
 
-    uint16_t highAddress = VGA_CRTC_HIGH_ADDRESS_REGISTER | (visiblePageOffset & 0xff00);
-    uint16_t lowAddress  = VGA_CRTC_LOW_ADDRESS_REGISTER  | (visiblePageOffset << 8);
-
-    this->waitForDisplayEnable();
-
-    /*
-    outpw(VGA_CRTC_INDEX, highAddress);
-    equals to
-    outp(VGA_CRTC_INDEX, VGA_CRTC_HIGH_ADDRESS_REGISTER);
-    outp(VGA_CRTC_DATA, (visiblePageOffset & 0xff00) >> 8);
-    */
-    outpw(VGA_CRTC_INDEX, highAddress);
-    outpw(VGA_CRTC_INDEX, lowAddress);
-    
-    this->waitForVretrace();
+    updateActivePage();
 }
 
-void VgaRenderer::panPage(uint16_t offsetX, uint16_t offsetY) {
-    uint16_t highAddress = VGA_CRTC_HIGH_ADDRESS_REGISTER | ((this->visiblePageOffset + offsetX / 4) & 0xff00);
-    uint16_t lowAddress  = VGA_CRTC_LOW_ADDRESS_REGISTER  | ((this->visiblePageOffset + offsetX / 4) << 8);
+void VgaRenderer::updateActivePage() {
+    uint16_t highAddress = VGA_CRTC_HIGH_ADDRESS_REGISTER | ((this->visiblePageOffset + this->panOffsetX / 4) & 0xff00);
+    uint16_t lowAddress  = VGA_CRTC_LOW_ADDRESS_REGISTER  | ((this->visiblePageOffset + this->panOffsetX / 4) << 8);
 
     this->waitForDisplayEnable();
 
@@ -66,9 +54,14 @@ void VgaRenderer::panPage(uint16_t offsetX, uint16_t offsetY) {
     o[1] = 2;
     o[2] = 4;
     o[3] = 6;
-    outp(VGA_AC_INDEX, o[offsetX % 4]);
+    outp(VGA_AC_INDEX, o[this->panOffsetX % 4]);
 
     this->waitForVretrace();
+}
+
+void VgaRenderer::setPanOffset(uint16_t x, uint16_t y) {
+    this->panOffsetX = x;
+    this->panOffsetY = y;
 }
 
 void VgaRenderer::drawPixel(int x, int y, uint8_t color) {

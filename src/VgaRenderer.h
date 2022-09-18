@@ -56,7 +56,8 @@ public:
     void exit();
 
     void flipPage();
-    void panPage(uint16_t offsetX, uint16_t offsetY);
+    void updateActivePage();
+    void setPanOffset(uint16_t offsetX, uint16_t offsetY);
 
     void drawPixel(int x, int y, uint8_t color);
     void drawPlanarSprite(int x, int y, PlanarSprite *sprite);
@@ -69,6 +70,8 @@ private:
     uint8_t *vgaScreenBuffer;
     uint16_t visiblePageOffset;
     uint16_t hiddenPageOffset;
+    uint16_t panOffsetX;
+    uint16_t panOffsetY;
     int previousVideoMode;
 
     void enterVgaMode13();

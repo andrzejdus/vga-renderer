@@ -75,6 +75,8 @@ private:
 
     int init(uint16_t virtualWidth, uint16_t virtualHeight);
 
+    void copyToPlane(int vgaPlaneIndex, const uint8_t *data, const uint16_t width, int height, int x, int y);
+
     void enterVgaMode13();
     void enableVgaModeY();
     void enterPreviousVideoMode();

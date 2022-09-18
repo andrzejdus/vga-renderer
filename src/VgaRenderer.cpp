@@ -60,27 +60,34 @@ void VgaRenderer::drawPixel(int x, int y, uint8_t color) {
 }
 
 void VgaRenderer::drawPlanarSprite(int x, int y, PlanarSprite *sprite) {
-    const uint16_t virtualPlaneWidth = this->virtualWidth / VGA_PLANES;
-
-    for (int vgaPlane = 0; vgaPlane < VGA_PLANES; vgaPlane++) {
-        this->selectPlane(vgaPlane);
+    for (int vgaPlaneIndex = 0; vgaPlaneIndex < VGA_PLANES; vgaPlaneIndex++) {
+        int spritePlaneIndex = (vgaPlaneIndex + VGA_PLANES - x % VGA_PLANES) % VGA_PLANES;
+        const uint8_t *spritePlaneData = sprite->getPlaneData(spritePlaneIndex);
+        const uint16_t spritePlaneWidth = sprite->getPlaneWidth(spritePlaneIndex);
         
-        int spritePlane = (vgaPlane + VGA_PLANES - x % VGA_PLANES) % VGA_PLANES;
-        const uint8_t *spritePlaneData = sprite->getPlaneData(spritePlane);
-        const uint16_t spritePlaneWidth = sprite->getPlaneWidth(spritePlane);
+        int spriteHeight = sprite->getHeight();
 
-        for (int line = 0; line < sprite->getHeight(); line++) {
-            uint8_t *destinationAddress =
-                VGA_MEMORY_ADDRESS +
-                hiddenPageOffset +
-                virtualPlaneWidth * (y + line) +
-                x / VGA_PLANES +
-                (vgaPlane < (x % VGA_PLANES) ? 1: 0);
-            
-            const uint8_t *sourceAddress = spritePlaneData + spritePlaneWidth * line;
+        this->copyToPlane(vgaPlaneIndex, spritePlaneData, spritePlaneWidth, spriteHeight, x, y);
+    }
+}
 
-            memcpy(destinationAddress, sourceAddress, spritePlaneWidth);
-        }
+void VgaRenderer::copyToPlane(int vgaPlaneIndex, const uint8_t *data, const uint16_t width, int height, int x, int y) {
+    this->selectPlane(vgaPlaneIndex); 
+
+    for (int lineNumber = 0; lineNumber < height; lineNumber++) {
+        const uint16_t virtualPlaneWidth = this->virtualWidth / VGA_PLANES;
+        uint16_t destinationLineOffset = virtualPlaneWidth * (y + lineNumber);
+        uint8_t *destinationAddress =
+            VGA_MEMORY_ADDRESS +
+            hiddenPageOffset +
+            destinationLineOffset +
+            x / VGA_PLANES +
+            (vgaPlaneIndex < (x % VGA_PLANES) ? 1: 0);
+        
+        uint16_t sourceLineOffset = width * lineNumber;
+        const uint8_t *sourceAddress = data + sourceLineOffset;
+
+        memcpy(destinationAddress, sourceAddress, width);
     }
 }
 

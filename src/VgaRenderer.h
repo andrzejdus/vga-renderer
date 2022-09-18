@@ -11,7 +11,7 @@
 #define BIOS_SET_VIDEO_MODE 0x0
 
 /* VGA General */
-#define VGA_MEMORY_ADDRESS 0xa0000000
+#define VGA_MEMORY_ADDRESS (uint8_t *) 0xa0000000
 #define VGA_256_COLOR_MODE_13 0x13
 #define VGA_COLORS_COUNT 256
 #define VGA_PLANES 4
@@ -67,7 +67,6 @@ public:
 private:
     uint16_t virtualWidth;
     uint16_t vgaPlaneBufferSize;
-    uint8_t *vgaScreenBuffer;
     uint16_t visiblePageOffset;
     uint16_t hiddenPageOffset;
     uint16_t panOffsetX;

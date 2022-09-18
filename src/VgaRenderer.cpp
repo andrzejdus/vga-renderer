@@ -56,22 +56,30 @@ void VgaRenderer::drawPixel(int x, int y, uint8_t color) {
     int plane = x & (VGA_PLANES - 1);
     this->selectPlane(plane);
     uint16_t drawOffset = hiddenPageOffset + this->virtualWidth / VGA_PLANES * y + x / VGA_PLANES;
-    *(this->vgaScreenBuffer + drawOffset) = color;
+    *(VGA_MEMORY_ADDRESS + drawOffset) = color;
 }
 
 void VgaRenderer::drawPlanarSprite(int x, int y, PlanarSprite *sprite) {
     const uint16_t virtualPlaneWidth = this->virtualWidth / VGA_PLANES;
 
-    for (int plane = 0; plane < VGA_PLANES; plane++) {
-        this->selectPlane(plane);
-
-        const uint8_t *spritePlaneData = sprite->getPlaneData(plane);
-        const uint16_t spritePlaneWidth = sprite->getPlaneWidth(plane);
+    for (int vgaPlane = 0; vgaPlane < VGA_PLANES; vgaPlane++) {
+        this->selectPlane(vgaPlane);
+        
+        int spritePlane = (vgaPlane + VGA_PLANES - x % VGA_PLANES) % VGA_PLANES;
+        const uint8_t *spritePlaneData = sprite->getPlaneData(spritePlane);
+        const uint16_t spritePlaneWidth = sprite->getPlaneWidth(spritePlane);
 
         for (int line = 0; line < sprite->getHeight(); line++) {
-            memcpy(this->vgaScreenBuffer + hiddenPageOffset + virtualPlaneWidth * (y + line) + x / VGA_PLANES,
-                   spritePlaneData + spritePlaneWidth * line,
-                   spritePlaneWidth);
+            uint8_t *destinationAddress =
+                VGA_MEMORY_ADDRESS +
+                hiddenPageOffset +
+                virtualPlaneWidth * (y + line) +
+                x / VGA_PLANES +
+                (vgaPlane < (x % VGA_PLANES) ? 1: 0);
+            
+            const uint8_t *sourceAddress = spritePlaneData + spritePlaneWidth * line;
+
+            memcpy(destinationAddress, sourceAddress, spritePlaneWidth);
         }
     }
 }
@@ -80,7 +88,7 @@ void VgaRenderer::drawFullscreenSprite(PlanarSprite *sprite) {
     for (int plane = 0; plane < VGA_PLANES; plane++) {
         this->selectPlane(plane);
 
-        memcpy(this->vgaScreenBuffer + hiddenPageOffset, sprite->getPlaneData(plane), this->vgaPlaneBufferSize);
+        memcpy(VGA_MEMORY_ADDRESS + hiddenPageOffset, sprite->getPlaneData(plane), this->vgaPlaneBufferSize);
     }
 }
 
@@ -101,9 +109,9 @@ void VgaRenderer::setPalette(uint32_t *palette) {
 int VgaRenderer::init(uint16_t virtualWidth, uint16_t virtualHeight) {
     this->virtualWidth = virtualWidth;
     this->vgaPlaneBufferSize = virtualWidth / VGA_PLANES * virtualHeight;
-    this->vgaScreenBuffer = (uint8_t *) VGA_MEMORY_ADDRESS;
+    // this->vgaScreenAddress = (uint8_t *) VGA_MEMORY_ADDRESS;
     this->visiblePageOffset = 0;
-    this->hiddenPageOffset =  this->vgaPlaneBufferSize;
+    this->hiddenPageOffset = this->vgaPlaneBufferSize;
     this->panOffsetX = 0;
     this->panOffsetY = 0;
 

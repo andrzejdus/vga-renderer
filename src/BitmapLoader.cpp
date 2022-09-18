@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <math.h>
 
-static Bitmap *BitmapLoader::load(char *fileName) {
+static BmpBitmap *BitmapLoader::load(char *fileName) {
     FILE *filePointer = fopen(fileName, "r");
 
     if (filePointer == NULL) {

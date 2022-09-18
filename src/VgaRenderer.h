@@ -52,7 +52,7 @@
 
 class VgaRenderer {
 public:
-    int init(uint16_t virtualWidth = 320, uint16_t virtualHeight = 200);
+    VgaRenderer(uint32_t *palette, uint16_t virtualWidth = 320, uint16_t virtualHeight = 200);
     void exit();
 
     void flipPage();
@@ -74,8 +74,10 @@ private:
     uint16_t panOffsetY;
     int previousVideoMode;
 
+    int init(uint16_t virtualWidth, uint16_t virtualHeight);
+
     void enterVgaMode13();
-    void enableModeY();
+    void enableVgaModeY();
     void enterPreviousVideoMode();
 
     void clearVgaMemory();

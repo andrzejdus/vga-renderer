@@ -4,21 +4,9 @@
 #include <conio.h>
 #include <mem.h>
 
-int VgaRenderer::init(uint16_t virtualWidth, uint16_t virtualHeight) {
-    this->virtualWidth = virtualWidth;
-    this->vgaPlaneBufferSize = virtualWidth / VGA_PLANES * virtualHeight;
-    this->vgaScreenBuffer = (uint8_t *) VGA_MEMORY_ADDRESS;
-    this->visiblePageOffset = 0;
-    this->hiddenPageOffset =  this->vgaPlaneBufferSize;
-    this->panOffsetX = 0;
-    this->panOffsetY = 0;
-
-    this->enterVgaMode13();
-    this->enableModeY();
-    outp(VGA_CRTC_INDEX, VGA_CRTC_OFFSET_REGISTER);
-    outp(VGA_CRTC_DATA, virtualWidth / 8);
-
-    return 0;
+VgaRenderer::VgaRenderer(uint32_t *palette, uint16_t virtualWidth, uint16_t virtualHeight) {
+    this->init(virtualWidth, virtualHeight);
+    this->setPalette(palette);
 }
 
 void VgaRenderer::exit() {
@@ -110,6 +98,23 @@ void VgaRenderer::setPalette(uint32_t *palette) {
     }
 }
 
+int VgaRenderer::init(uint16_t virtualWidth, uint16_t virtualHeight) {
+    this->virtualWidth = virtualWidth;
+    this->vgaPlaneBufferSize = virtualWidth / VGA_PLANES * virtualHeight;
+    this->vgaScreenBuffer = (uint8_t *) VGA_MEMORY_ADDRESS;
+    this->visiblePageOffset = 0;
+    this->hiddenPageOffset =  this->vgaPlaneBufferSize;
+    this->panOffsetX = 0;
+    this->panOffsetY = 0;
+
+    this->enterVgaMode13();
+    this->enableVgaModeY();
+    outp(VGA_CRTC_INDEX, VGA_CRTC_OFFSET_REGISTER);
+    outp(VGA_CRTC_DATA, virtualWidth / 8);
+
+    return 0;
+}
+
 void VgaRenderer::enterVgaMode13() {
     union REGS in, out;
 
@@ -122,7 +127,7 @@ void VgaRenderer::enterVgaMode13() {
     int86(BIOS_VIDEO_INT, &in, &out);
 }
 
-void VgaRenderer::enableModeY() {
+void VgaRenderer::enableVgaModeY() {
     this->disableChain4();
     this->disableDoubleWordMode();
     this->disableWordMode();

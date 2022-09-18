@@ -1,5 +1,17 @@
 {
     "files.associations": {
-        "cstdint": "cpp"
-    }
+        "cstdint": "cpp",
+        "vector": "cpp",
+        "cmath": "cpp",
+        "cstddef": "cpp",
+        "cstdio": "cpp",
+        "cstring": "cpp",
+        "iterator": "cpp",
+        "limits": "cpp",
+        "memory": "cpp",
+        "new": "cpp",
+        "typeinfo": "cpp",
+        "ctime": "cpp"
+    },
+    "C_Cpp.errorSquiggles": "Disabled"
 }

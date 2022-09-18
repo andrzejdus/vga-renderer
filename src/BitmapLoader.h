@@ -5,7 +5,7 @@
 
 class BitmapLoader {
 public:
-    static Bitmap *load(char *fileName);
+    static BmpBitmap *load(char *fileName);
 };
 
 #endif //VGARENDERER_BITMAPLOADER_H

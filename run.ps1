@@ -14,6 +14,6 @@ else
     exit 2
 }
 
-[string[]]$dosboxArguments = ('./build/vr.exe', '-noconsole')
+[string[]]$dosboxArguments = ('.\build\vr.exe', '-noconsole')
 
 & $command $dosboxArguments

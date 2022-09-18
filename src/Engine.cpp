@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <conio.h>
+#include <dos.h>
 #include "Engine.h"
 #include "World.h"
 
@@ -8,6 +9,8 @@ Engine::Engine(VgaRenderer *vgaRenderer, World *world) {
     this->world = world;
     this->playerX = 0;
     this->playerY = 0;
+    this->speedX = 0;
+    this->speedY = 0;
 }
 
 void Engine::run() {
@@ -19,7 +22,12 @@ void Engine::run() {
 }
 
 void Engine::renderFrame() {
-    updateInputs();
+    time_t currentTime;
+    time(&currentTime);
+    double deltaTime = currentTime - this->lastTime;
+    this->lastTime = currentTime;
+
+    updateInputs(deltaTime);
 
     vector<Actor*> actors = this->world->getActors();
     unsigned int actorsCount = actors.size();
@@ -33,35 +41,33 @@ void Engine::renderFrame() {
         vgaRenderer->drawPlanarSprite(currentActor->getX(), currentActor->getY(), actorSprite);
     }
 
-    time_t currentTime;
-    time(&currentTime);
-    double deltaDime = currentTime - this->lastTime;
-    this->lastTime = currentTime;
- 
     vgaRenderer->flipPage();
 }
 
-void Engine::updateInputs() {
+void Engine::updateInputs(double deltaTime) {
     if (kbhit()) {
         switch (getch())
         {
         case 'd':
-            this->playerX += 5;
+            this->speedX += 1;
             break;
         case 'a':
-            this->playerX -= 5;
+            this->speedX -= 1;
             break;
         case 'w':
-            this->playerY -= 5;
+            this->speedY -= 1;
             break;
         case 's':
-            this->playerY += 5;
+            this->speedY += 1;
             break;
         default:
             break;
         }
     }
     
+    this->playerX += this->speedX;
+    this->playerY += this->speedY;
+
     Actor *controllableActor = this->world->getControllableActor();
     controllableActor->setX(this->playerX);
     controllableActor->setY(this->playerY);

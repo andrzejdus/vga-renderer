@@ -13,11 +13,13 @@ private:
     VgaRenderer *vgaRenderer;
     World *world;
     time_t lastTime;
-    int playerX;
-    int playerY;
+    double playerX;
+    double playerY;
+    double speedX;
+    double speedY;
 
     void renderFrame();
-    void updateInputs();
+    void updateInputs(double deltaTime);
 };
 
 #endif //VGARENDERER_ENGINE_H

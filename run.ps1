@@ -14,6 +14,11 @@ else
     exit 2
 }
 
-[string[]]$dosboxArguments = ('.\build\vr.exe', '-noconsole')
+[string]$binary = './build/vr.exe';
+if($IsWindows)
+{
+    $binary = '.\build\vr.exe';
+}
+[string[]]$dosboxArguments = ($binary, '-noconsole')
 
 & $command $dosboxArguments

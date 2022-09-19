@@ -52,7 +52,7 @@
 
 class VgaRenderer {
 public:
-    VgaRenderer(uint32_t *palette, uint16_t virtualWidth = 320, uint16_t virtualHeight = 200);
+    VgaRenderer(uint16_t virtualWidth = 320, uint16_t virtualHeight = 200);
     void exit();
 
     void flipPage();

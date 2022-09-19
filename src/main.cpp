@@ -74,8 +74,11 @@ int main() {
         return 1;
     }
 
+    VgaRenderer *vgaRenderer = new VgaRenderer();
+
     Bitmap *paletteBitmap = loadBitmap("assets/gunk.bmp");
-    VgaRenderer *vgaRenderer = new VgaRenderer((uint32_t *) paletteBitmap->getPalette());
+    vgaRenderer->setPalette((uint32_t *) paletteBitmap->getPalette());
+
     Engine *engine = new Engine(vgaRenderer, world);
     engine->run();
 

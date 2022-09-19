@@ -4,9 +4,8 @@
 #include <conio.h>
 #include <mem.h>
 
-VgaRenderer::VgaRenderer(uint32_t *palette, uint16_t virtualWidth, uint16_t virtualHeight) {
+VgaRenderer::VgaRenderer(uint16_t virtualWidth, uint16_t virtualHeight) {
     this->init(virtualWidth, virtualHeight);
-    this->setPalette(palette);
 }
 
 void VgaRenderer::exit() {
